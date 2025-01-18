@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: white;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+            background: #ff8c00;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        input {
+            width: 80%;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            border: 1px solid white;
+            background-color: #333;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>User Dashboard</h1>
+        <button id="connectWallet">Connect Wallet</button>
+        <p id="walletAddress">Not connected</p>
+        
+        <h2>Place Script Automation Order</h2>
+        <input type="text" id="scriptDescription" placeholder="Describe your automation request">
+        <button id="submitOrder">Submit Order</button>
+        <p id="orderStatus"></p>
+    </div>
+    
+    <script>
+        let provider, signer;
+
+        document.getElementById("connectWallet").addEventListener("click", async () => {
+            if (window.ethereum) {
+                provider = new ethers.providers.Web3Provider(window.ethereum);
+                await provider.send("eth_requestAccounts", []);
+                signer = provider.getSigner();
+                const walletAddress = await signer.getAddress();
+                document.getElementById("walletAddress").textContent = `Connected: ${walletAddress}`;
+            } else {
+                alert("MetaMask is required to use this site");
+            }
+        });
+
+        document.getElementById("submitOrder").addEventListener("click", () => {
+            const description = document.getElementById("scriptDescription").value;
+            if (!description) {
+                document.getElementById("orderStatus").textContent = "Please enter a description";
+                return;
+            }
+            document.getElementById("orderStatus").textContent = "Order submitted successfully!";
+        });
+    </script>
+</body>
+</html>
