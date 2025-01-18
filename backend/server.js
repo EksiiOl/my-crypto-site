@@ -3,7 +3,14 @@ const cors = require("cors");
 const fs = require("fs");
 
 const app = express();
-app.use(cors());
+
+// Настройка CORS
+app.use(cors({
+    origin: "*", // Разрешаем доступ со всех источников
+    methods: ["GET", "POST"], // Разрешаем только GET и POST
+    allowedHeaders: ["Content-Type"] // Разрешаем заголовок Content-Type
+}));
+
 app.use(express.json());
 
 const ordersFile = "orders.json";
@@ -41,7 +48,7 @@ app.post("/orders", (req, res) => {
 });
 
 // Запуск сервера
-const PORT = 5000;
-app.listen(PORT, () => {
-    console.log(`✅ Server running on http://localhost:${PORT}`);
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
