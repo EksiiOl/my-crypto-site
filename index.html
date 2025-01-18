@@ -52,21 +52,38 @@
         <h2>Orders List</h2>
         <ul id="ordersList"></ul>
     </div>
+	<div id="adminPanel" style="display: none; margin-top: 20px;">
+    <h2>Admin Panel</h2>
+    <p>Вы авторизованы как администратор</p>
+	</div>
+
     
     <script>
-        let provider, signer, userWallet = "";
+        let provider, signer, userWallet;
 
-        document.getElementById("connectWallet").addEventListener("click", async () => {
-            if (window.ethereum) {
-                provider = new ethers.providers.Web3Provider(window.ethereum);
-                await provider.send("eth_requestAccounts", []);
-                signer = provider.getSigner();
-                userWallet = await signer.getAddress();
-                document.getElementById("walletAddress").textContent = `Connected: ${userWallet}`;
-            } else {
-                alert("MetaMask is required to use this site");
-            }
-        });
+		const adminWallet = "0x1eecBf3abb6AdDaea5D2Ce3CCF25A8f9Cb76273B"; // Замените на свой кошелек
+
+		document.getElementById("connectWallet").addEventListener("click", async () => {
+			if (window.ethereum) {
+				provider = new ethers.providers.Web3Provider(window.ethereum);
+				await provider.send("eth_requestAccounts", []);
+				signer = provider.getSigner();
+				userWallet = await signer.getAddress();
+
+				document.getElementById("walletAddress").textContent = `Connected: ${userWallet}`;
+
+				// Проверка на админа
+				if (userWallet.toLowerCase() === adminWallet.toLowerCase()) {
+					document.getElementById("adminPanel").style.display = "block";
+				} else {
+					document.getElementById("adminPanel").style.display = "none";
+				}	
+
+			} else {
+				alert("MetaMask или RabbyWallet не установлены. Пожалуйста, установите один из них.");
+			}
+		});
+
 
         document.getElementById("submitOrder").addEventListener("click", async () => {
             const description = document.getElementById("scriptDescription").value;
